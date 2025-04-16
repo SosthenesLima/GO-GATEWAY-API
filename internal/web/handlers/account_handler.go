@@ -30,5 +30,6 @@ func (h *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "applications/json")
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(output)
 }
