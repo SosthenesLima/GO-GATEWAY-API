@@ -25,6 +25,12 @@ func (s *AccountService) CreateAccount(input dto.CreateAccountInput) (*dto.Accou
 
 	}
 
-	err = s.repository.Save()
+	err = s.repository.Save(account)
+	if err != nil {
+		return nil, err
 
+	}
+
+	output := dto.FromAccount(account)
+	return &output, nil
 }
