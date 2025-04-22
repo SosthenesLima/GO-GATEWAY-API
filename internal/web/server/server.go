@@ -11,7 +11,7 @@ import (
 type Server struct {
 	router         *chi.Mux
 	server         *http.Server
-	accountService *server.AccountService
+	accountService *service.AccountService
 	port           string
 }
 
@@ -21,20 +21,19 @@ func NewServer(acconntService *service.AccountService, port string) *Server {
 		accountService: acconntService,
 		port:           port,
 	}
-	
+
 }
 func (s *Server) ConfigureRoutes() {
-    accountHandler := handlers.NewAccountHandler(s.accountService)
+	accountHandler := handlers.NewAccountHandler(s.accountService)
 
 	s.router.Post("/accounts", accountHandler.Create)
-	s.router.Get("/accounts", accountHandler.Get)
+
 }
 
 func (s *Server) Start() error {
-	s.server =  &http.Server{
-		Addr:   ":" + s.port, 
+	s.server = &http.Server{
+		Addr:    ":" + s.port,
 		Handler: s.router,
 	}
-	returt s.server.ListendAndServe()
-	
+	return s.server.ListenAndServe()
 }
