@@ -6,10 +6,10 @@ import (
 )
 
 type AccountService struct {
-	repository domain.AcoountRepository
+	repository domain.AccountRepository
 }
 
-func NewAccountService(repository domain.AcoountRepository) *AccountService {
+func NewAccountService(repository domain.AccountRepository) *AccountService {
 	return &AccountService{repository: repository}
 }
 
@@ -56,4 +56,23 @@ func (s *AccountService) FindByAPIKey(apiKey string) (*dto.AccountOutput, error)
 	}
 	output := dto.FromAccount(account)
 	return &output, nil
+}
+
+func (s *AccountService) ListAccounts() ([]dto.AccountOutput, error) {
+	accounts, err := s.repository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	output := make([]dto.AccountOutput, 0, len(accounts))
+	for _, acc := range accounts {
+		output = append(output, dto.AccountOutput{
+			ID:      acc.ID,
+			Name:    acc.Name,
+			Email:   acc.Email,
+			Balance: acc.Balance,
+		})
+	}
+
+	return output, nil
 }

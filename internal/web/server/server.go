@@ -15,10 +15,10 @@ type Server struct {
 	port           string
 }
 
-func NewServer(acconntService *service.AccountService, port string) *Server {
+func NewServer(accontService *service.AccountService, port string) *Server {
 	return &Server{
 		router:         chi.NewRouter(),
-		accountService: acconntService,
+		accountService: accontService,
 		port:           port,
 	}
 
@@ -27,6 +27,7 @@ func (s *Server) ConfigureRoutes() {
 	accountHandler := handlers.NewAccountHandler(s.accountService)
 
 	s.router.Post("/accounts", accountHandler.Create)
+	s.router.Get("/accounts", accountHandler.Get)
 
 }
 
