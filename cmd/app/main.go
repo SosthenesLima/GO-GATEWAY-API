@@ -6,6 +6,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/devfullcycle/imersao22/go-gateway/internal/repository"
+	"github.com/devfullcycle/imersao22/go-gateway/internal/service"
+	"github.com/devfullcycle/imersao22/go-gateway/internal/web/server"
 	"github.com/joho/godotenv"
 )
 
@@ -24,7 +27,7 @@ func main() {
 	}
 
 	// String de conexão com o banco
-
+	// Constrói a string de conexão com o banco de dados
 	connStr := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		getEnv("DB_HOST", "db"),
@@ -35,9 +38,32 @@ func main() {
 		getEnv("DB_SSL_MODE", "disable"),
 	)
 
+	// Conecta ao banco de dados
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal("Erro connecting to database: ", err)
 	}
 	defer db.Close()
+
+	// Verifica a conexão com o banco
+	if err := db.Ping(); err != nil {
+		log.Fatal("Erro ao verificar conexão com o banco de dados: ", err)
+	}
+	// Inicializa o repositório
+	accountRepository := repository.NewAccountRepository(db)
+
+	// Inicializa o serviço com o repositório como dependência
+	accountService := service.NewAccountService(accountRepository)
+
+	// Configura o servidor HTTP
+	port := getEnv("HTTP_PORT", "8080")
+	srv := server.NewServer(accountService, port)
+	srv.ConfigureRoutes()
+
+	// Inicia o servidor
+	srv.Start()
+
+	if err := srv.Start(); err != nil {
+		log.Fatal("Error starting server: ", err)
+	}
 }
