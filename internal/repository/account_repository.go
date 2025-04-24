@@ -7,15 +7,15 @@ import (
 	"github.com/devfullcycle/imersao22/go-gateway/internal/domain"
 )
 
-type AcoountRepository struct {
+type AccountRepository struct {
 	db *sql.DB
 }
 
-func NewAccountRepository(db *sql.DB) *AcoountRepository {
-	return &AcoountRepository{db: db}
+func NewAccountRepository(db *sql.DB) *AccountRepository {
+	return &AccountRepository{db: db}
 }
 
-func (r *AcoountRepository) Save(account *domain.Account) error {
+func (r *AccountRepository) Save(account *domain.Account) error {
 	stmt, err := r.db.Prepare(`
 	   INSERT INTO accounts (id, name, email, api_key, balance, created_at, updated_at)
 	   VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -41,7 +41,7 @@ func (r *AcoountRepository) Save(account *domain.Account) error {
 	return nil
 }
 
-func (r *AcoountRepository) FindByAPIKey(apiKey string) (*domain.Account, error) {
+func (r *AccountRepository) FindByAPIKey(apiKey string) (*domain.Account, error) {
 	var account domain.Account
 	var createdAT, UpdateAT time.Time
 
@@ -72,7 +72,7 @@ func (r *AcoountRepository) FindByAPIKey(apiKey string) (*domain.Account, error)
 
 }
 
-func (r *AcoountRepository) FindByID(id string) (*domain.Account, error) {
+func (r *AccountRepository) FindByID(id string) (*domain.Account, error) {
 	var account domain.Account
 	var createdAT, UpdateAT time.Time
 
@@ -102,7 +102,7 @@ func (r *AcoountRepository) FindByID(id string) (*domain.Account, error) {
 	return &account, nil
 }
 
-func (r *AcoountRepository) UpdateBalance(account *domain.Account) error {
+func (r *AccountRepository) UpdateBalance(account *domain.Account) error {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return err

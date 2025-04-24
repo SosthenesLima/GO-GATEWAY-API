@@ -54,7 +54,6 @@ func main() {
 
 	// Inicializa o serviço com o repositório como dependência
 	accountService := service.NewAccountService(accountRepository)
-
 	// Configura o servidor HTTP
 	port := getEnv("HTTP_PORT", "8080")
 	srv := server.NewServer(accountService, port)
