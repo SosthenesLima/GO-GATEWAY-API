@@ -11,6 +11,11 @@ type AccountRepository struct {
 	db *sql.DB
 }
 
+// FindAll implements domain.AccountRepository.
+func (r *AccountRepository) FindAll() ([]*domain.Account, error) {
+	panic("unimplemented")
+}
+
 func NewAccountRepository(db *sql.DB) *AccountRepository {
 	return &AccountRepository{db: db}
 }
